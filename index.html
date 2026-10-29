@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOIR | فروشگاه عطر و ادکلن</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        @font-face {
+            font-family: "Far_Diplomat";
+            src: url("fonts/Far_Diplomat.ttf");
+        }
+
+
+
+        :root {
+            --gold: #c5a46d;
+            --dark: #161616;
+            --cream: #f8f5ef;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Far_Diplomat";
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .english-font {
+            font-family: "Playfair Display", serif;
+        }
+
+        .gold-text {
+            color: var(--gold);
+        }
+
+        .gold-bg {
+            background: var(--gold);
+        }
+
+        .hero {
+            background:
+                radial-gradient(circle at 25% 45%,
+                    rgba(197, 164, 109, .18),
+                    transparent 35%),
+                linear-gradient(135deg, #26231f, #101010);
+        }
+
+        .hero-bottle {
+            filter: drop-shadow(0 30px 35px rgba(0, 0, 0, .5));
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-14px);
+            }
+        }
+
+        .bottle {
+            position: relative;
+            width: 100px;
+            height: 150px;
+            border-radius: 15px 15px 24px 24px;
+            box-shadow:
+                inset 10px 0 20px rgba(255, 255, 255, .16),
+                inset -12px 0 20px rgba(0, 0, 0, .24),
+                0 20px 30px rgba(0, 0, 0, .14);
+        }
+
+        .bottle::before {
+            content: "";
+            position: absolute;
+            width: 42px;
+            height: 27px;
+            background: linear-gradient(90deg, #8b7045, #e2c993, #8b7045);
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .bottle::after {
+            content: "";
+            position: absolute;
+            width: 65%;
+            height: 42%;
+            background: rgba(255, 255, 255, .86);
+            top: 37%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        .bottle-label {
+            position: absolute;
+            top: 47%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            color: #252525;
+            font-family: Georgia, serif;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .hero .bottle {
+            width: 175px;
+            height: 255px;
+        }
+
+        .hero .bottle::before {
+            width: 70px;
+            height: 45px;
+            top: -41px;
+        }
+
+        .hero .bottle-label {
+            font-size: 20px;
+        }
+
+        .product-card {
+            transition: transform .3s, box-shadow .3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, .09);
+        }
+
+        .product-card:hover .bottle {
+            transform: scale(1.07);
+        }
+
+        .product-card .bottle {
+            transition: transform .3s;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body x-data="{
+        mobileMenu: false,
+        cartOpen: false,
+        detailOpen: false,
+        searchOpen: false,
+
+        search: '',
+        category: 'all',
+        sort: 'default',
+
+        selectedProduct: null,
+        toast: '',
+        toastVisible: false,
+
+        favorites: [],
+        cart: [],
+
+        products: [
+            {
+                id: 1,
+                name: 'ساواج الکسیر',
+                brand: 'DIOR',
+                type: 'men',
+                price: 8900000,
+                oldPrice: 10500000,
+                color: '#34465c',
+                size: '60ml',
+                note: 'ادویه‌ای، چوبی و گرم',
+                description: 'عطری قدرتمند با رایحه‌ای عمیق و ماندگار؛ مناسب شب‌های خاص.'
+            },
+            {
+                id: 2,
+                name: 'بلک اوپیوم',
+                brand: 'YSL',
+                type: 'women',
+                price: 7200000,
+                oldPrice: null,
+                color: '#27212c',
+                size: '90ml',
+                note: 'قهوه، وانیل و گل‌های سفید',
+                description: 'رایحه‌ای گرم، شیرین و اغواکننده برای لحظات فراموش‌نشدنی.'
+            },
+            {
+                id: 3,
+                name: 'باکارات رژ ۵۴۰',
+                brand: 'MFK',
+                type: 'unisex',
+                price: 14500000,
+                oldPrice: 16800000,
+                color: '#a12d35',
+                size: '70ml',
+                note: 'زعفران، یاس و عنبر',
+                description: 'ترکیبی لوکس و متفاوت با رد بویی خاص و به‌یادماندنی.'
+            },
+            {
+                id: 4,
+                name: 'اونتوس',
+                brand: 'CREED',
+                type: 'men',
+                price: 12900000,
+                oldPrice: null,
+                color: '#363e39',
+                size: '100ml',
+                note: 'آناناس، توس و مشک',
+                description: 'عطری با شخصیت جسور، مناسب افراد بااعتمادبه‌نفس.'
+            },
+            {
+                id: 5,
+                name: 'لیبره',
+                brand: 'YSL',
+                type: 'women',
+                price: 6800000,
+                oldPrice: 7900000,
+                color: '#d4a56e',
+                size: '90ml',
+                note: 'اسطوخودوس، شکوفه پرتقال',
+                description: 'ترکیبی مدرن از لطافت و قدرت با رایحه‌ای دلنشین.'
+            },
+            {
+                id: 6,
+                name: 'عود وود',
+                brand: 'TOM FORD',
+                type: 'unisex',
+                price: 15800000,
+                oldPrice: null,
+                color: '#493126',
+                size: '100ml',
+                note: 'عود، چوب صندل و هل',
+                description: 'رایحه‌ای چوبی، مرموز و خاص برای علاقه‌مندان عطرهای نیش.'
+            },
+            {
+                id: 7,
+                name: 'بلو د شنل',
+                brand: 'CHANEL',
+                type: 'men',
+                price: 8300000,
+                oldPrice: null,
+                color: '#152b44',
+                size: '100ml',
+                note: 'مرکبات، بخور و چوب سدر',
+                description: 'رایحه‌ای شیک و همه‌پسند برای استفاده روزانه و رسمی.'
+            },
+            {
+                id: 8,
+                name: 'گود گرل',
+                brand: 'CAROLINA HERRERA',
+                type: 'women',
+                price: 7600000,
+                oldPrice: 9200000,
+                color: '#253c65',
+                size: '80ml',
+                note: 'بادام، گل مریم و کاکائو',
+                description: 'عطری شیرین و جذاب با ترکیبی از لطافت و جسارت.'
+            }
+        ],
+
+        get filteredProducts() {
+            let result = this.products.filter(product => {
+                const matchCategory =
+                    this.category === 'all' ||
+                    product.type === this.category;
+
+                const matchSearch =
+                    product.name.toLowerCase().includes(this.search.toLowerCase()) ||
+                    product.brand.toLowerCase().includes(this.search.toLowerCase());
+
+                return matchCategory && matchSearch;
+            });
+
+            if (this.sort === 'cheap') {
+                result.sort((a, b) => a.price - b.price);
+            }
+
+            if (this.sort === 'expensive') {
+                result.sort((a, b) => b.price - a.price);
+            }
+
+            return result;
+        },
+
+        get cartCount() {
+            return this.cart.reduce((total, item) => total + item.quantity, 0);
+        },
+
+        get cartTotal() {
+            return this.cart.reduce(
+                (total, item) => total + item.price * item.quantity,
+                0
+            );
+        },
+
+        formatPrice(price) {
+            return new Intl.NumberFormat('fa-IR').format(price);
+        },
+
+        addToCart(product) {
+            const existing = this.cart.find(item => item.id === product.id);
+
+            if (existing) {
+                existing.quantity++;
+            } else {
+                this.cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+
+            this.showToast('محصول به سبد خرید اضافه شد');
+            this.$dispatch('cart-updated', {
+                count: this.cartCount
+            });
+        },
+
+        removeFromCart(id) {
+            this.cart = this.cart.filter(item => item.id !== id);
+            this.showToast('محصول از سبد حذف شد');
+        },
+
+        changeQuantity(id, amount) {
+            const item = this.cart.find(item => item.id === id);
+
+            if (!item) return;
+
+            item.quantity += amount;
+
+            if (item.quantity <= 0) {
+                this.removeFromCart(id);
+            }
+        },
+
+        toggleFavorite(id) {
+            if (this.favorites.includes(id)) {
+                this.favorites = this.favorites.filter(item => item !== id);
+                this.showToast('از علاقه‌مندی‌ها حذف شد');
+            } else {
+                this.favorites.push(id);
+                this.showToast('به علاقه‌مندی‌ها اضافه شد');
+            }
+        },
+
+        openDetail(product) {
+            this.selectedProduct = product;
+            this.detailOpen = true;
+        },
+
+        showToast(message) {
+            this.toast = message;
+            this.toastVisible = true;
+
+            setTimeout(() => {
+                this.toastVisible = false;
+            }, 2500);
+        },
+
+        setCategory(value) {
+            this.category = value;
+            document.getElementById('products').scrollIntoView({
+                behavior: 'smooth'
+            });
+        },
+
+        init() {
+            this.$watch('cartOpen', value => {
+                document.body.style.overflow = value ? 'hidden' : '';
+            });
+
+            this.$watch('detailOpen', value => {
+                if (value) {
+                    document.body.style.overflow = 'hidden';
+                } else if (!this.cartOpen) {
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    }" @keydown.escape.window="
+        cartOpen = false;
+        detailOpen = false;
+        mobileMenu = false;
+        searchOpen = false;
+    ">
+
+    <div class="bg-[#c5a46d] text-[#171717] text-center text-xs sm:text-sm py-2 px-4">
+        ارسال رایگان برای سفارش‌های بالای ۵ میلیون تومان
+        <span class="mx-2">✦</span>
+        تضمین اصالت کالا
+    </div>
+
+    <header class="sticky top-0 z-40 bg-[#171717] text-white shadow-xl">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+            <div class="h-20 flex items-center justify-between gap-4">
+
+                <button class="lg:hidden text-2xl" @click="mobileMenu = !mobileMenu" aria-label="باز کردن منو">
+                    ☰
+                </button>
+
+                <a href="#" class="flex flex-col items-center shrink-0">
+                    <span class="english-font text-3xl tracking-[8px] gold-text">
+                        NOIR
+                    </span>
+                    <span class="text-[9px] tracking-[4px] text-gray-400">
+                        PERFUMERY
+                    </span>
+                </a>
+
+                <nav class="hidden lg:flex items-center gap-8 text-sm text-gray-300">
+
+                    <a href="#" class="hover:text-[#c5a46d] transition">
+                        صفحه اصلی
+                    </a>
+
+                    <a href="#products" class="hover:text-[#c5a46d] transition">
+                        فروشگاه
+                    </a>
+
+                    <a href="#products" @click="category = 'men'" class="hover:text-[#c5a46d] transition">
+                        عطر مردانه
+                    </a>
+
+                    <a href="#products" @click="category = 'women'" class="hover:text-[#c5a46d] transition">
+                        عطر زنانه
+                    </a>
+
+                    <a href="#about" class="hover:text-[#c5a46d] transition">
+                        درباره ما
+                    </a>
+
+                </nav>
+
+                <div class="flex items-center gap-3 sm:gap-5">
+
+                    <button @click="
+                            searchOpen = !searchOpen;
+                            if (searchOpen) {
+                                $nextTick(() => $refs.searchInput.focus());
+                            }
+                        " class="hover:text-[#c5a46d] transition text-xl" aria-label="جست‌وجو">
+                        ⚲
+                    </button>
+
+                    <button @click="cartOpen = true" class="relative hover:text-[#c5a46d] transition text-xl"
+                        aria-label="سبد خرید">
+                        🛍
+
+                        <span x-show="cartCount > 0" x-text="cartCount" class="absolute -top-2 -left-3 min-w-5 h-5 px-1
+                                   rounded-full bg-[#c5a46d] text-black
+                                   text-[11px] flex items-center justify-center"></span>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div x-show="searchOpen" x-cloak x-transition.opacity.duration.200ms class="pb-5">
+                <input x-ref="searchInput" x-model="search" @input="
+                        document.getElementById('products')
+                            .scrollIntoView({ behavior: 'smooth' })
+                    " type="text" placeholder="نام عطر یا برند را جست‌وجو کنید..." class="w-full rounded-lg bg-[#292929] border border-[#444]
+                           px-5 py-3 text-white outline-none
+                           focus:border-[#c5a46d]">
+            </div>
+
+            <nav x-show="mobileMenu" x-cloak x-transition.opacity.duration.200ms
+                class="lg:hidden pb-5 flex flex-col gap-4 text-sm text-gray-300">
+                <a href="#" @click="mobileMenu = false">صفحه اصلی</a>
+
+                <a href="#products" @click="mobileMenu = false">
+                    فروشگاه
+                </a>
+
+                <a href="#products" @click="category = 'men'; mobileMenu = false">
+                    عطر مردانه
+                </a>
+
+                <a href="#products" @click="category = 'women'; mobileMenu = false">
+                    عطر زنانه
+                </a>
+
+                <a href="#about" @click="mobileMenu = false">
+                    درباره ما
+                </a>
+            </nav>
+
+        </div>
+    </header>
+
+    <section class="hero text-white overflow-hidden">
+
+        <div class="max-w-7xl mx-auto px-6 py-20 lg:py-28">
+
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                <div class="text-center lg:text-right">
+
+                    <span class="gold-text tracking-[3px] text-xs sm:text-sm">
+                        THE ART OF FRAGRANCE
+                    </span>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.5] mt-6">
+                        رایحه‌ای که
+                        <br>
+                        <span class="gold-text">امضای توست</span>
+                    </h1>
+
+                    <p class="text-gray-400 mt-6 max-w-lg mx-auto lg:mx-0 leading-9">
+                        دنیایی از عطرهای خاص، ماندگار و لوکس.
+                        رایحه‌ای انتخاب کن که داستان شخصیت تو را روایت کند.
+                    </p>
+
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-4 mt-9">
+
+                        <a href="#products" class="gold-bg text-black px-8 py-4 rounded-sm
+                                   font-semibold hover:bg-[#e0bd83] transition">
+                            کشف عطرها
+                        </a>
+
+                        <a href="#about" class="border border-[#c5a46d] text-[#c5a46d]
+                                   px-8 py-4 rounded-sm
+                                   hover:bg-[#c5a46d] hover:text-black transition">
+                            درباره نوآر
+                        </a>
+
+                    </div>
+
+                    <div class="flex justify-center lg:justify-start gap-8 mt-12 text-center">
+
+                        <div>
+                            <strong class="block text-2xl gold-text">100%</strong>
+                            <span class="text-xs text-gray-400">اصالت کالا</span>
+                        </div>
+
+                        <div>
+                            <strong class="block text-2xl gold-text">24/7</strong>
+                            <span class="text-xs text-gray-400">پشتیبانی</span>
+                        </div>
+
+                        <div>
+                            <strong class="block text-2xl gold-text">+500</strong>
+                            <span class="text-xs text-gray-400">رایحه خاص</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="flex items-center justify-center min-h-[350px]">
+
+                    <div class="relative">
+
+                        <div class="absolute inset-0 bg-[#c5a46d]/20 blur-[90px] rounded-full"></div>
+
+                        <div class="hero-bottle relative z-10">
+
+                            <div class="bottle" style="background: linear-gradient(145deg,#654b32,#171717 75%)">
+                                <span class="bottle-label">NOIR</span>
+                            </div>
+
+                        </div>
+
+                        <div class="absolute -bottom-14 -right-12
+                                    w-72 h-10 bg-black/40 blur-xl rounded-full">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="bg-white border-b border-gray-100">
+
+        <div class="max-w-7xl mx-auto px-6 py-9
+                    grid grid-cols-2 lg:grid-cols-4 gap-7">
+
+            <div class="text-center">
+                <div class="text-2xl mb-2">✦</div>
+                <h3 class="font-bold text-sm">ضمانت اصالت</h3>
+                <p class="text-xs text-gray-500 mt-1">محصولات باکیفیت</p>
+            </div>
+
+            <div class="text-center">
+                <div class="text-2xl mb-2">🚚</div>
+                <h3 class="font-bold text-sm">ارسال سریع</h3>
+                <p class="text-xs text-gray-500 mt-1">به سراسر کشور</p>
+            </div>
+
+            <div class="text-center">
+                <div class="text-2xl mb-2">🎁</div>
+                <h3 class="font-bold text-sm">بسته‌بندی لوکس</h3>
+                <p class="text-xs text-gray-500 mt-1">مناسب هدیه</p>
+            </div>
+
+            <div class="text-center">
+                <div class="text-2xl mb-2">☎</div>
+                <h3 class="font-bold text-sm">مشاوره خرید</h3>
+                <p class="text-xs text-gray-500 mt-1">انتخاب رایحه مناسب</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 py-20">
+
+        <div class="text-center mb-12">
+            <p class="gold-text text-xs tracking-[4px]">EXPLORE COLLECTIONS</p>
+
+            <h2 class="text-3xl font-bold mt-4">
+                دنیای رایحه‌ها
+            </h2>
+
+            <p class="text-gray-500 mt-4">
+                عطر مناسب شخصیت خودت را پیدا کن
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+
+            <button @click="setCategory('men')" class="group relative overflow-hidden bg-[#202b37]
+                       min-h-[230px] rounded-xl text-white p-8 text-right">
+                <div class="absolute -left-8 -bottom-16 w-44 h-44
+                            rounded-full bg-blue-400/10 blur-2xl"></div>
+
+                <span class="text-xs text-gray-300">FOR HIM</span>
+
+                <h3 class="text-2xl font-bold mt-4">
+                    عطر مردانه
+                </h3>
+
+                <p class="text-gray-300 text-sm mt-3">
+                    قدرت، جسارت و اعتمادبه‌نفس
+                </p>
+
+                <span class="inline-block mt-8 text-[#d6b47a]
+                             group-hover:translate-x-[-6px] transition">
+                    مشاهده محصولات ←
+                </span>
+            </button>
+
+            <button @click="setCategory('women')" class="group relative overflow-hidden bg-[#7c4c55]
+                       min-h-[230px] rounded-xl text-white p-8 text-right">
+                <div class="absolute -left-8 -bottom-16 w-44 h-44
+                            rounded-full bg-pink-300/20 blur-2xl"></div>
+
+                <span class="text-xs text-gray-200">FOR HER</span>
+
+                <h3 class="text-2xl font-bold mt-4">
+                    عطر زنانه
+                </h3>
+
+                <p class="text-gray-200 text-sm mt-3">
+                    لطافت، ظرافت و جذابیت
+                </p>
+
+                <span class="inline-block mt-8 text-[#f0cfa5]
+                             group-hover:translate-x-[-6px] transition">
+                    مشاهده محصولات ←
+                </span>
+            </button>
+
+            <button @click="setCategory('unisex')" class="group relative overflow-hidden bg-[#5b4b38]
+                       min-h-[230px] rounded-xl text-white p-8 text-right">
+                <div class="absolute -left-8 -bottom-16 w-44 h-44
+                            rounded-full bg-yellow-300/10 blur-2xl"></div>
+
+                <span class="text-xs text-gray-200">UNISEX</span>
+
+                <h3 class="text-2xl font-bold mt-4">
+                    عطر یونیسکس
+                </h3>
+
+                <p class="text-gray-200 text-sm mt-3">
+                    رایحه‌ای فراتر از مرزها
+                </p>
+
+                <span class="inline-block mt-8 text-[#f0cfa5]
+                             group-hover:translate-x-[-6px] transition">
+                    مشاهده محصولات ←
+                </span>
+            </button>
+
+        </div>
+
+    </section>
+
+    <section id="products" class="bg-[#f1ede6] py-20 scroll-mt-28">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="text-center mb-12">
+                <p class="gold-text text-xs tracking-[4px]">OUR COLLECTION</p>
+
+                <h2 class="text-3xl font-bold mt-4">
+                    مجموعه عطرهای منتخب
+                </h2>
+
+                <p class="text-gray-500 mt-4">
+                    انتخاب‌هایی خاص برای سلیقه‌های متفاوت
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row lg:items-center
+                        justify-between gap-5 mb-10">
+
+                <div class="flex flex-wrap gap-2">
+
+                    <template x-for="item in [
+                            { value: 'all', label: 'همه عطرها' },
+                            { value: 'men', label: 'مردانه' },
+                            { value: 'women', label: 'زنانه' },
+                            { value: 'unisex', label: 'یونیسکس' }
+                        ]" :key="item.value">
+                        <button @click="category = item.value" :class="
+                                category === item.value
+                                ? 'bg-[#171717] text-white'
+                                : 'bg-white text-gray-600 hover:bg-gray-100'
+                            " class="px-5 py-3 rounded-lg text-sm transition" x-text="item.label"></button>
+                    </template>
+
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3">
+
+                    <input x-model="search" type="text" placeholder="جست‌وجوی عطر..." class="bg-white border border-gray-200
+                               rounded-lg px-4 py-3 text-sm outline-none
+                               focus:border-[#c5a46d]">
+
+                    <select x-model="sort" class="bg-white border border-gray-200
+                               rounded-lg px-4 py-3 text-sm outline-none">
+                        <option value="default">مرتب‌سازی پیش‌فرض</option>
+                        <option value="cheap">ارزان‌ترین</option>
+                        <option value="expensive">گران‌ترین</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <p class="text-sm text-gray-500 mb-6">
+                تعداد محصولات:
+                <span class="font-bold text-black" x-text="filteredProducts.length"></span>
+            </p>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <template x-for="product in filteredProducts" :key="product.id">
+
+                    <article class="product-card bg-white rounded-xl overflow-hidden">
+
+                        <div class="relative bg-[#e9e5de] h-64
+                                    flex items-center justify-center">
+
+                            <span x-show="product.oldPrice" class="absolute top-4 right-4 bg-[#171717]
+                                       text-white text-[11px] px-3 py-1 rounded">
+                                فروش ویژه
+                            </span>
+
+                            <button @click="toggleFavorite(product.id)" :class="
+                                    favorites.includes(product.id)
+                                    ? 'text-red-500'
+                                    : 'text-gray-500'
+                                " class="absolute top-3 left-3 bg-white
+                                       w-10 h-10 rounded-full text-xl
+                                       flex items-center justify-center
+                                       hover:scale-110 transition" aria-label="علاقه‌مندی">
+                                <span x-text="
+                                    favorites.includes(product.id)
+                                    ? '♥'
+                                    : '♡'
+                                "></span>
+                            </button>
+
+                            <div class="bottle mt-8" :style="{
+                                    background:
+                                        'linear-gradient(145deg,' +
+                                        product.color +
+                                        ',#171717)'
+                                }">
+                                <span class="bottle-label" x-text="product.brand"></span>
+                            </div>
+
+                            <button @click="openDetail(product)" class="absolute bottom-4 left-1/2 -translate-x-1/2
+                                       bg-white/90 text-black text-xs
+                                       px-5 py-2 rounded-full
+                                       hover:bg-[#c5a46d] transition">
+                                مشاهده جزئیات
+                            </button>
+
+                        </div>
+
+                        <div class="p-5">
+
+                            <p class="text-xs text-[#a48759] tracking-[2px]" x-text="product.brand"></p>
+
+                            <h3 class="font-bold text-lg mt-2" x-text="product.name"></h3>
+
+                            <p class="text-gray-500 text-xs mt-2" x-text="product.note"></p>
+
+                            <div class="flex items-end justify-between mt-6 gap-2">
+
+                                <div>
+
+                                    <p x-show="product.oldPrice" class="text-xs text-gray-400 line-through">
+                                        <span x-text="product.oldPrice
+                                                ? formatPrice(product.oldPrice)
+                                                : ''"></span>
+                                        تومان
+                                    </p>
+
+                                    <p class="font-bold text-[#171717] mt-1">
+                                        <span x-text="formatPrice(product.price)"></span>
+                                        <span class="text-xs font-normal">تومان</span>
+                                    </p>
+
+                                </div>
+
+                                <span class="text-xs text-gray-400" x-text="product.size"></span>
+
+                            </div>
+
+                            <button @click="addToCart(product)" class="w-full mt-5 bg-[#171717] text-white
+                                       py-3 rounded-lg text-sm
+                                       hover:bg-[#c5a46d] hover:text-black transition">
+                                + افزودن به سبد خرید
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                </template>
+
+            </div>
+
+            <div x-show="filteredProducts.length === 0" x-cloak class="text-center py-16">
+                <p class="text-4xl mb-4">⌕</p>
+
+                <h3 class="text-xl font-bold">
+                    محصولی پیدا نشد
+                </h3>
+
+                <p class="text-gray-500 mt-3">
+                    عبارت جست‌وجو یا فیلتر را تغییر بده.
+                </p>
+
+                <button @click="
+                        search = '';
+                        category = 'all';
+                        sort = 'default';
+                    " class="mt-6 bg-black text-white px-6 py-3 rounded-lg">
+                    نمایش همه محصولات
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="about" class="py-24 bg-[#171717] text-white">
+
+        <div class="max-w-6xl mx-auto px-6 text-center">
+
+            <p class="gold-text tracking-[4px] text-xs">
+                THE NOIR STORY
+            </p>
+
+            <h2 class="text-3xl sm:text-4xl font-bold mt-6">
+                هر رایحه، یک داستان
+            </h2>
+
+            <p class="max-w-2xl mx-auto text-gray-400 leading-9 mt-7">
+                در نوآر باور داریم عطر فقط یک رایحه نیست؛
+                بخشی از هویت، خاطره و شخصیت هر انسان است.
+                هدف ما خلق تجربه‌ای متفاوت از انتخاب عطر است؛
+                تجربه‌ای که در آن کیفیت، زیبایی و سلیقه در کنار هم قرار می‌گیرند.
+            </p>
+
+            <div class="w-24 h-[2px] bg-[#c5a46d] mx-auto mt-10"></div>
+
+            <span class="english-font gold-text text-4xl inline-block mt-10 tracking-[8px]">
+                NOIR
+            </span>
+
+        </div>
+
+    </section>
+
+    <section class="py-20 bg-[#e8dfd1]">
+
+        <div class="max-w-3xl mx-auto px-6 text-center">
+
+            <h2 class="text-3xl font-bold">
+                عضو خانواده نوآر شو
+            </h2>
+
+            <p class="text-gray-600 mt-4">
+                از جدیدترین رایحه‌ها و پیشنهادهای ویژه باخبر شو.
+            </p>
+
+            <div x-data="{ email: '' }" class="flex flex-col sm:flex-row gap-3 mt-8">
+
+                <input x-model="email" type="email" placeholder="ایمیل خود را وارد کنید" class="flex-1 bg-white rounded-lg px-5 py-4
+                           outline-none border border-transparent
+                           focus:border-[#c5a46d]">
+
+                <button @click="
+                        if (email.trim()) {
+                            $dispatch('newsletter-message', {
+                                text: 'ایمیل به صورت نمایشی ثبت شد'
+                            });
+                            email = '';
+                        }
+                    " class="bg-[#171717] text-white px-8 py-4 rounded-lg
+                           hover:bg-[#c5a46d] hover:text-black transition">
+                    عضویت
+                </button>
+
+            </div>
+
+            <p class="text-xs text-gray-500 mt-4">
+                این فرم صرفاً نمایشی است و اطلاعاتی به سرور ارسال نمی‌کند.
+            </p>
+
+        </div>
+
+    </section>
+
+    <footer class="bg-[#111] text-gray-400">
+
+        <div class="max-w-7xl mx-auto px-6 py-16
+                    grid md:grid-cols-4 gap-10">
+
+            <div class="md:col-span-2">
+
+                <h3 class="english-font text-[#c5a46d]
+                           text-4xl tracking-[7px]">
+                    NOIR
+                </h3>
+
+                <p class="text-sm leading-8 mt-5 max-w-md">
+                    نوآر، تجربه‌ای متفاوت از دنیای عطر و ادکلن.
+                    جایی برای کشف رایحه‌هایی که فراموش نمی‌شوند.
+                </p>
+
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-5">
+                    دسترسی سریع
+                </h4>
+
+                <div class="flex flex-col gap-3 text-sm">
+                    <a href="#" class="hover:text-[#c5a46d]">صفحه اصلی</a>
+                    <a href="#products" class="hover:text-[#c5a46d]">فروشگاه</a>
+                    <a href="#about" class="hover:text-[#c5a46d]">درباره ما</a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-5">
+                    ارتباط با ما
+                </h4>
+
+                <div class="flex flex-col gap-3 text-sm">
+                    <p>پشتیبانی آنلاین</p>
+                    <p>شنبه تا پنجشنبه</p>
+                    <p>ساعت ۹ تا ۱۸</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="border-t border-white/10 text-center py-6 text-xs">
+            © 2026 NOIR — پروژه آموزشی طراحی فروشگاه عطر
+        </div>
+
+    </footer>
+
+    <div x-show="cartOpen" x-cloak x-transition.opacity.duration.200ms @click="cartOpen = false"
+        class="fixed inset-0 bg-black/70 z-50"></div>
+
+    <aside x-show="cartOpen" x-cloak x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="translate-x-full" class="fixed top-0 right-0 z-[60] h-full w-full max-w-md
+               bg-white shadow-2xl flex flex-col">
+
+        <div class="flex items-center justify-between
+                    p-6 border-b border-gray-200">
+
+            <div>
+                <h2 class="text-xl font-bold">سبد خرید</h2>
+
+                <p class="text-xs text-gray-500 mt-1">
+                    <span x-text="cartCount"></span>
+                    محصول
+                </p>
+            </div>
+
+            <button @click="cartOpen = false" class="text-2xl text-gray-500 hover:text-black">
+                ×
+            </button>
+
+        </div>
+
+        <div x-show="cart.length === 0" class="flex-1 flex flex-col items-center justify-center p-6">
+            <span class="text-6xl">🛍</span>
+
+            <h3 class="text-xl font-bold mt-5">
+                سبد خریدت خالیه!
+            </h3>
+
+            <p class="text-gray-500 text-sm mt-3 text-center">
+                هنوز عطری به سبد خرید اضافه نکردی.
+            </p>
+
+            <button @click="cartOpen = false" class="mt-7 bg-black text-white px-8 py-3 rounded-lg">
+                ادامه خرید
+            </button>
+        </div>
+
+        <div x-show="cart.length > 0" class="flex-1 overflow-y-auto p-5 space-y-4">
+
+            <template x-for="item in cart" :key="item.id">
+
+                <div class="flex items-center gap-4 border-b
+                            border-gray-100 pb-5">
+
+                    <div class="w-20 h-24 rounded-lg bg-[#eee9e1]
+                                flex items-center justify-center shrink-0">
+
+                        <div class="w-9 h-14 rounded-lg shadow-lg" :style="{
+                                background:
+                                    'linear-gradient(145deg,' +
+                                    item.color +
+                                    ',#171717)'
+                            }"></div>
+
+                    </div>
+
+                    <div class="flex-1">
+
+                        <p class="text-[10px] text-[#a48759]" x-text="item.brand"></p>
+
+                        <h3 class="font-bold mt-1" x-text="item.name"></h3>
+
+                        <p class="text-sm mt-2">
+                            <span x-text="formatPrice(item.price)"></span>
+                            تومان
+                        </p>
+
+                        <div class="flex items-center gap-3 mt-3">
+
+                            <button @click="changeQuantity(item.id, -1)" class="w-7 h-7 bg-gray-100 rounded">
+                                -
+                            </button>
+
+                            <span x-text="item.quantity"></span>
+
+                            <button @click="changeQuantity(item.id, 1)" class="w-7 h-7 bg-gray-100 rounded">
+                                +
+                            </button>
+
+                            <button @click="removeFromCart(item.id)" class="mr-auto text-red-500 text-xs">
+                                حذف
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </template>
+
+        </div>
+
+        <div x-show="cart.length > 0" class="border-t border-gray-200 p-6">
+
+            <div class="flex items-center justify-between mb-5">
+
+                <span class="font-bold">مجموع سبد خرید</span>
+
+                <strong>
+                    <span x-text="formatPrice(cartTotal)"></span>
+                    تومان
+                </strong>
+
+            </div>
+
+            <button @click="showToast('این پروژه آموزشی است و درگاه پرداخت ندارد')" class="w-full bg-[#171717] text-white
+                       py-4 rounded-lg hover:bg-[#c5a46d]
+                       hover:text-black transition">
+                ادامه فرایند خرید
+            </button>
+
+        </div>
+
+    </aside>
+
+    <div x-show="detailOpen" x-cloak x-transition.opacity @click="detailOpen = false" class="fixed inset-0 bg-black/75 z-[70]
+               flex items-center justify-center p-4">
+
+        <div @click.stop x-show="detailOpen" x-transition.scale.95.duration.200ms class="bg-white rounded-2xl max-w-3xl w-full
+                   max-h-[90vh] overflow-y-auto relative">
+
+            <button @click="detailOpen = false" class="absolute top-4 left-5 text-3xl z-10">
+                ×
+            </button>
+
+            <template x-if="selectedProduct">
+
+                <div class="grid md:grid-cols-2">
+
+                    <div class="bg-[#ebe6dd] min-h-[300px]
+                                flex items-center justify-center">
+
+                        <div class="bottle" :style="{
+                                background:
+                                    'linear-gradient(145deg,' +
+                                    selectedProduct.color +
+                                    ',#171717)'
+                            }">
+                            <span class="bottle-label" x-text="selectedProduct.brand"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="p-8 flex flex-col justify-center">
+
+                        <p class="text-[#a48759] tracking-[3px] text-xs" x-text="selectedProduct.brand"></p>
+
+                        <h2 class="text-3xl font-bold mt-4" x-text="selectedProduct.name"></h2>
+
+                        <p class="text-gray-500 mt-5 leading-8 text-sm" x-text="selectedProduct.description"></p>
+
+                        <div class="mt-6 space-y-3 text-sm">
+
+                            <p>
+                                <strong>حجم:</strong>
+                                <span x-text="selectedProduct.size"></span>
+                            </p>
+
+                            <p>
+                                <strong>رایحه:</strong>
+                                <span x-text="selectedProduct.note"></span>
+                            </p>
+
+                        </div>
+
+                        <p class="text-2xl font-bold mt-8">
+                            <span x-text="formatPrice(selectedProduct.price)"></span>
+                            <span class="text-sm font-normal">تومان</span>
+                        </p>
+
+                        <button @click="
+                                addToCart(selectedProduct);
+                                detailOpen = false;
+                            " class="bg-black text-white py-4
+                                   rounded-lg mt-7 hover:bg-[#c5a46d]
+                                   hover:text-black transition">
+                            افزودن به سبد خرید
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </template>
+
+        </div>
+
+    </div>
+
+    <div x-show="toastVisible" x-cloak x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-5" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-5" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100]
+               bg-[#171717] text-white px-6 py-4 rounded-xl
+               shadow-2xl text-sm text-center min-w-[260px]">
+        <span class="text-[#c5a46d] ml-2">✓</span>
+        <span x-text="toast"></span>
+    </div>
+
+    <div x-data="{ lastCartCount: 0 }" @cart-updated.window="lastCartCount = $event.detail.count" class="hidden"></div>
+
+    <div x-data @newsletter-message.window="
+            alert($event.detail.text)
+        " class="hidden"></div>
+
+</body>
+
+</html>
